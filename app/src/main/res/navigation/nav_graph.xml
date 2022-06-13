@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/gridSizeFormFragment"
         android:name="com.example.artmedicalproject.gridSizeForm.GridSizeFormFragment"
-        android:label="GridSizeFormFragment" >
+        android:label="GridSizeFormFragment">
         <action
             android:id="@+id/action_gridSizeFormFragment_to_gridFragment"
             app:destination="@id/gridFragment" />
@@ -17,14 +17,31 @@
         android:id="@+id/gridFragment"
         android:name="com.example.artmedicalproject.grid.GridFragment"
         android:label="fragment_grid"
-        tools:layout="@layout/fragment_grid" >
+        tools:layout="@layout/fragment_grid">
         <argument
             android:name="columnCount"
             app:argType="integer"
-            app:nullable="false"/>
+            app:nullable="false" />
         <argument
             android:name="rowCount"
             app:argType="integer"
-            app:nullable="false"/>
+            app:nullable="false" />
+        <action
+            android:id="@+id/action_gridFragment_to_coloredGridFragment"
+            app:destination="@id/coloredGridFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/coloredGridFragment"
+        android:name="com.example.artmedicalproject.coloredGrid.ColoredGridFragment"
+        android:label="fragment_colored_grid"
+        tools:layout="@layout/fragment_colored_grid">
+        <argument
+            android:name="columnCount"
+            app:argType="integer"
+            app:nullable="false" />
+        <argument
+            android:name="rowCount"
+            app:argType="integer"
+            app:nullable="false" />
     </fragment>
 </navigation>

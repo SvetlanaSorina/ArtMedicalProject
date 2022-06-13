@@ -1,4 +1,4 @@
-package com.example.artmedicalproject.grid
+package com.example.artmedicalproject.coloredGrid
 
 import android.os.Bundle
 import android.util.Log
@@ -8,18 +8,15 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.artmedicalproject.PixelGridView
+import com.example.artmedicalproject.PixelGridColoredView
 import com.example.artmedicalproject.databinding.FragmentGridBinding
 import com.example.artmedicalproject.utils.toPx
 
 
-class GridFragment : Fragment() {
+class ColoredGridFragment : Fragment() {
     private lateinit var binding: FragmentGridBinding
-    private val viewModel: GridViewModel by viewModels()
-    private val navArgs: GridFragmentArgs by navArgs()
+    private val navArgs: ColoredGridFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,15 +28,6 @@ class GridFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.submitButton.setOnClickListener {
-            findNavController().navigate(
-                GridFragmentDirections.actionGridFragmentToColoredGridFragment(
-                navArgs.columnCount,
-                navArgs.rowCount
-            ))
-        }
-
         val pixelGrid = createPixelGrid()
         binding.root.apply {
             val constraintSet = ConstraintSet()
@@ -53,7 +41,7 @@ class GridFragment : Fragment() {
         }
     }
 
-    private fun createPixelGrid(): PixelGridView {
+    private fun createPixelGrid(): PixelGridColoredView {
         val displayMetrics = requireContext().resources.displayMetrics
         Log.d("ZZZ", "createPixelGrid: ${displayMetrics.heightPixels}")
         val margin = 10.toPx()
@@ -63,7 +51,7 @@ class GridFragment : Fragment() {
         Log.d("ZZZ", "createPixelGrid: $margin - $buttonHeight - $buttonSpace ")
         val screenHeight = displayMetrics.heightPixels - buttonSpace
 
-        return PixelGridView(
+        return PixelGridColoredView(
             screenWidth = displayMetrics.widthPixels,
             screenHeight = screenHeight,
             numColumns = navArgs.columnCount,
