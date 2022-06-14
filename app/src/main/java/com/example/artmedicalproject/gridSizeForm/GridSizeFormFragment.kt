@@ -2,7 +2,6 @@ package com.example.artmedicalproject.gridSizeForm
 
 import android.os.Bundle
 import android.text.InputFilter
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,7 +70,6 @@ class GridSizeFormFragment : Fragment() {
     }
 
     private fun navigateToPixelGridFragment() {
-        Log.d("ZZZ", "navigateToPixelGridFragment: ")
         findNavController().navigate(
             GridSizeFormFragmentDirections.actionGridSizeFormFragmentToPixelGridFragment(
                 binding.numColumnsInput.text?.toString()?.toInt() ?: 1,

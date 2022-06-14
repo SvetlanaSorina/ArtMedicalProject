@@ -63,8 +63,8 @@ class PixelGridFragment : Fragment() {
 
     private fun setTime() {
         val endTime = System.currentTimeMillis()
-        val time = (TimeUnit.MICROSECONDS.toSeconds(endTime - startTime)).toInt()
-        binding.timeTextView.text = "Time: $time sec"
+        val time = (endTime - startTime).toInt()
+        binding.timeTextView.text = "Time: $time ms"
     }
 
     private fun observeCellArray() {
