@@ -8,7 +8,9 @@
         <entry key="app/src/main/res/layout/fragment_colored_grid.xml" value="0.42219848632812507" />
         <entry key="app/src/main/res/layout/fragment_grid.xml" value="0.22760416666666666" />
         <entry key="app/src/main/res/layout/fragment_grid_size_form.xml" value="0.22916666666666666" />
+        <entry key="app/src/main/res/layout/fragment_pixel_grid.xml" value="0.1" />
         <entry key="app/src/main/res/layout/grid_item.xml" value="0.2265625" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
       </map>
     </option>
   </component>

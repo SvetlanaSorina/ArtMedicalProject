@@ -12,7 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.artmedicalproject.PixelGridColoredView
+import com.example.artmedicalproject.PixelGridView
 import com.example.artmedicalproject.R
 import com.example.artmedicalproject.databinding.FragmentPixelGridBinding
 import com.example.artmedicalproject.utils.toPx
@@ -85,14 +85,14 @@ class PixelGridFragment : Fragment() {
         pxWidth: Int,
         pxHeight: Int,
         cellArray: Array<Array<Triple<Boolean, Int, Boolean>>>?
-    ): PixelGridColoredView {
-        return PixelGridColoredView(
-            screenWidth = pxWidth,
-            screenHeight = pxHeight,
+    ): PixelGridView {
+        return PixelGridView(
+            pxWidth = pxWidth,
+            pxHeight = pxHeight,
             numColumns = navArgs.columnCount,
             numRows = navArgs.rowCount,
             isPainted = navArgs.isPainted,
-            cellChecked = cellArray,
+            cellArray = cellArray,
             context = requireContext()
         ) { numIslands, cells ->
             setNumIslands(numIslands)
@@ -103,15 +103,16 @@ class PixelGridFragment : Fragment() {
         }
     }
 
-    private fun getLayoutParamsForPixelGridView(view: PixelGridColoredView): ConstraintLayout.LayoutParams {
-        return ConstraintLayout.LayoutParams(view.getViewWidth(), view.getViewHeight()).apply {
-            //TODO
-            horizontalBias = 0.5f
-            verticalBias = 0.5f
-        }
+    private fun getLayoutParamsForPixelGridView(view: PixelGridView): ConstraintLayout.LayoutParams {
+        return ConstraintLayout.LayoutParams(view.getViewWidth() + 10, view.getViewHeight() + 10)
+            .apply {
+                //TODO
+                horizontalBias = 0.5f
+                verticalBias = 0.5f
+            }
     }
 
-    private fun setUpPixelGrid(pixelGrid: PixelGridColoredView) {
+    private fun setUpPixelGrid(pixelGrid: PixelGridView) {
         binding.root.apply {
             val constraintSet = ConstraintSet()
             constraintSet.clone(this)
@@ -144,6 +145,6 @@ class PixelGridFragment : Fragment() {
     }
 
     private fun navigateToGridSizeFormFragment() {
-        findNavController().popBackStack(R.id.gridSizeFormFragment, true)
+        findNavController().navigate(PixelGridFragmentDirections.actionPixelGridFragmentToGridSizeFormFragment())
     }
 }

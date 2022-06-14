@@ -34,5 +34,9 @@
         <action
             android:id="@+id/action_pixelGridFragment_self"
             app:destination="@id/pixelGridFragment" />
+        <action
+            android:id="@+id/action_pixelGridFragment_to_gridSizeFormFragment"
+            app:destination="@id/gridSizeFormFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 </navigation>

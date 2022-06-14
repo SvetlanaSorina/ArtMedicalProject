@@ -16,7 +16,7 @@
         android:text="Please, enter number of columns and rows in the range from 1 to 1000"
         android:textAlignment="center"
         android:textSize="24sp"
-        android:textColor="@color/white"
+        android:textColor="@color/teal_200"
         app:layout_constraintBottom_toTopOf="@+id/numColumnsInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

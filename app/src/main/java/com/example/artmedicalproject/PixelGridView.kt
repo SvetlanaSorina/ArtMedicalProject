@@ -5,13 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import kotlin.random.Random
 
-class PixelGridColoredView : View {
-    private var screenWidth: Int = 0
-    private var screenHeight: Int = 0
+class PixelGridView : View {
+    private var pxWidth: Int = 0
+    private var pxHeight: Int = 0
     private var numColumns: Int = 0
     private var numRows: Int = 0
     private var viewWidth: Int = 0
@@ -19,35 +18,32 @@ class PixelGridColoredView : View {
     private var cellSize: Int = 0
     private var isPainted: Boolean = false
     private lateinit var onComplete: ((Int, Array<Array<Triple<Boolean, Int, Boolean>>>) -> Unit)
-
+    private var cellArray: Array<Array<Triple<Boolean, Int, Boolean>>> = emptyArray() // IsChecked / Color / isVisited
+    private var numIslands = 0
     private val blackPaint: Paint = Paint()
-    private var cellChecked: Array<Array<Triple<Boolean, Int, Boolean>>> = emptyArray()
-    private var islandCount = 0
 
     constructor(context: Context? = null, attrs: AttributeSet? = null) : super(context, attrs)
 
     constructor(
-        screenWidth: Int,
-        screenHeight: Int,
+        pxWidth: Int,
+        pxHeight: Int,
         numColumns: Int,
         numRows: Int,
         isPainted: Boolean = false,
-        cellChecked: Array<Array<Triple<Boolean, Int, Boolean>>>? = null,
+        cellArray: Array<Array<Triple<Boolean, Int, Boolean>>>? = null,
         context: Context? = null,
         attrs: AttributeSet? = null,
         onComplete: ((Int, Array<Array<Triple<Boolean, Int, Boolean>>>) -> Unit)
     ) : super(context, attrs) {
-        this.screenWidth = screenWidth
-        this.screenHeight = screenHeight
+        this.pxWidth = pxWidth
+        this.pxHeight = pxHeight
         this.numColumns = numColumns
         this.numRows = numRows
         this.isPainted = isPainted
         this.cellSize = calculateCellSize()
         this.viewWidth = cellSize * numColumns
         this.viewHeight = cellSize * numRows
-        this.cellChecked = cellChecked ?: Array(numColumns) {
-            Array(numRows) { Triple(Random.nextInt(0, 10) == 0, 0, false) }
-        }
+        this.cellArray = cellArray ?: Array(numColumns) { Array(numRows) { Triple(Random.nextInt(0, 10) == 0, 0, false) } }
         this.onComplete = onComplete
     }
 
@@ -63,14 +59,10 @@ class PixelGridColoredView : View {
         return viewHeight
     }
 
-    fun getCellChecked(): Array<Array<Triple<Boolean, Int, Boolean>>> {
-        return cellChecked
-    }
-
     private fun calculateCellSize(): Int {
         if (numColumns == 0) return 0
-        val maxViewWidth = screenWidth / numColumns
-        val maxViewHeight = screenHeight / numRows
+        val maxViewWidth = pxWidth / numColumns
+        val maxViewHeight = pxHeight / numRows
         return if (maxViewWidth <= maxViewHeight) maxViewWidth else maxViewHeight
     }
 
@@ -81,16 +73,17 @@ class PixelGridColoredView : View {
         }
         for (i in 0 until numColumns) {
             for (j in 0 until numRows) {
-                if (cellChecked[i][j].first) {
-                    if (isPainted && !cellChecked[i][j].third) {
+                val cell = cellArray[i][j]
+                if (cell.first) {
+                    if (isPainted && !cell.third) {
                         val color = generateRandomColor()
                         updateItem(i, j, color)
                         checkNearByCells(i, j, color)
-                        islandCount++
+                        numIslands++
                     }
 
                     val paint = Paint().apply {
-                        color = if (isPainted) cellChecked[i][j].second else Color.BLACK
+                        color = if (isPainted) cellArray[i][j].second else Color.BLACK
                     }
                     canvas.drawRect(
                         (i * cellSize).toFloat(),
@@ -102,7 +95,7 @@ class PixelGridColoredView : View {
                 }
             }
         }
-        for (i in 1 until numColumns) {
+        for (i in 0 .. numColumns) {
             canvas.drawLine(
                 (i * cellSize).toFloat(),
                 0f,
@@ -110,7 +103,7 @@ class PixelGridColoredView : View {
                 viewHeight.toFloat(), blackPaint
             )
         }
-        for (i in 1 until numRows) {
+        for (i in 0 .. numRows) {
             canvas.drawLine(
                 0f,
                 (i * cellSize).toFloat(),
@@ -119,23 +112,7 @@ class PixelGridColoredView : View {
             )
         }
 
-        Log.d("ZZZ", "onDraw: ")
-        onComplete(islandCount, cellChecked)
-    }
-
-    private fun checkCell(i: Int, j: Int, color: Int) {
-        if (isNotSafe(i, j)) return
-
-        updateItem(i, j, color)
-        checkNearByCells(i, j, color)
-    }
-
-    private fun isNotSafe(i: Int, j: Int): Boolean {
-        return i !in 0 until numColumns || j !in 0 until numRows || !cellChecked[i][j].first || cellChecked[i][j].third
-    }
-
-    private fun updateItem(i: Int, j: Int, color: Int) {
-        cellChecked[i][j] = Triple(cellChecked[i][j].first, color, true)
+        onComplete(numIslands, cellArray)
     }
 
     private fun checkNearByCells(i: Int, j: Int, color: Int) {
@@ -147,6 +124,21 @@ class PixelGridColoredView : View {
         checkCell(i - 1, j - 1, color) //RIGHT-TOP
         checkCell(i + 1, j - 1, color) //RIGHT-TOP
         checkCell(i - 1, j + 1, color) //LEFT-BOTTOM
+    }
+
+    private fun checkCell(i: Int, j: Int, color: Int) {
+        if (isNotSafe(i, j)) return
+
+        updateItem(i, j, color)
+        checkNearByCells(i, j, color)
+    }
+
+    private fun isNotSafe(i: Int, j: Int): Boolean {
+        return i !in 0 until numColumns || j !in 0 until numRows || !cellArray[i][j].first || cellArray[i][j].third
+    }
+
+    private fun updateItem(i: Int, j: Int, color: Int) {
+        cellArray[i][j] = Triple(cellArray[i][j].first, color, true)
     }
 
     private fun generateRandomColor(): Int {
