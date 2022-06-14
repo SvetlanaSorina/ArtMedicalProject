@@ -17,20 +17,20 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/columnCountInput"
+        app:layout_constraintBottom_toTopOf="@+id/numColumnsInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
     <EditText
-        android:id="@+id/columnCountInput"
+        android:id="@+id/numColumnsInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Columns"
         android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/rowCountInput"
+        app:layout_constraintBottom_toTopOf="@+id/numRowsInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
         app:layout_constraintVertical_chainStyle="packed"/>
 
     <EditText
-        android:id="@+id/rowCountInput"
+        android:id="@+id/numRowsInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -48,7 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/columnCountInput"
+        app:layout_constraintTop_toBottomOf="@+id/numColumnsInput"
         app:layout_constraintVertical_chainStyle="packed"/>
 
     <Button
@@ -57,11 +57,11 @@
         android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:enabled="false"
-        android:text="Submit"
+        android:text="GO"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rowCountInput"
+        app:layout_constraintTop_toBottomOf="@+id/numRowsInput"
         app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

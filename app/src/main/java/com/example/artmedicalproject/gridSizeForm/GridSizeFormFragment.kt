@@ -2,21 +2,31 @@ package com.example.artmedicalproject.gridSizeForm
 
 import android.os.Bundle
 import android.text.InputFilter
-import android.text.Spanned
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.artmedicalproject.databinding.FragmentGridSizeFormBinding
+import com.example.artmedicalproject.utils.InputFilterMinMax
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class GridSizeFormFragment : Fragment() {
+    companion object {
+        private const val MIN_VALUE = "1"
+        private const val MAX_VALUE = "1000"
+    }
+
     private lateinit var binding: FragmentGridSizeFormBinding
     private val viewModel: GridSizeFormViewModel by viewModels()
+
+    private val inputFilter = arrayOf<InputFilter>(InputFilterMinMax(MIN_VALUE, MAX_VALUE))
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,65 +43,41 @@ class GridSizeFormFragment : Fragment() {
     }
 
     private fun initViews() {
-        binding.columnCountInput.apply {
-            filters = arrayOf<InputFilter>(InputFilterMinMax("1", "1000"))
-            doOnTextChanged { text, _, _, _ ->
-                viewModel.emitColumnCount(text.toString())
+        binding.apply {
+            setUpInput(numColumnsInput) { text -> viewModel.emitColumnCount(text) }
+            setUpInput(numRowsInput) { text -> viewModel.emitRowCount(text) }
+
+            submitButton.setOnClickListener {
+                navigateToPixelGridFragment()
             }
-        }
-
-
-        binding.rowCountInput.apply {
-            filters = arrayOf<InputFilter>(InputFilterMinMax("1", "1000"))
-            doOnTextChanged { text, _, _, _ ->
-                viewModel.emitRowCount(text.toString())
-            }
-        }
-
-        binding.submitButton.setOnClickListener {
-            findNavController().navigate(GridSizeFormFragmentDirections.actionGridSizeFormFragmentToGridFragment(
-                binding.columnCountInput.text?.toString()?.toInt()?: 1,
-                binding.rowCountInput.text?.toString()?.toInt()?: 1
-            ))
         }
     }
 
     private fun observeIsButtonEnabled() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isButtonEnabled.collect {
                 binding.submitButton.isEnabled = it
             }
         }
-
     }
 
-    class InputFilterMinMax(min: String, max: String) : InputFilter {
-        private var min: Int
-        private var max: Int
-
-        init {
-            this.min = min.toInt()
-            this.max = max.toInt()
-        }
-
-        override fun filter(
-            source: CharSequence,
-            start: Int,
-            end: Int,
-            dest: Spanned,
-            dstart: Int,
-            dend: Int
-        ): CharSequence? {
-            try {
-                val input = (dest.toString() + source.toString()).toInt()
-                if (isInRange(min, max, input)) return null
-            } catch (nfe: NumberFormatException) {
+    private fun setUpInput(editText: EditText, onTextChanged: (String) -> Unit) {
+        editText.apply {
+            filters = inputFilter
+            doOnTextChanged { text, _, _, _ ->
+                onTextChanged(text.toString())
             }
-            return ""
         }
+    }
 
-        private fun isInRange(a: Int, b: Int, c: Int): Boolean {
-            return if (b > a) c in a..b else c in b..a
-        }
+    private fun navigateToPixelGridFragment() {
+        Log.d("ZZZ", "navigateToPixelGridFragment: ")
+        findNavController().navigate(
+            GridSizeFormFragmentDirections.actionGridSizeFormFragmentToPixelGridFragment(
+                binding.numColumnsInput.text?.toString()?.toInt() ?: 1,
+                binding.numRowsInput.text?.toString()?.toInt() ?: 1,
+                false
+            )
+        )
     }
 }
