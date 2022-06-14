@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
@@ -78,7 +79,9 @@ class PixelGridFragment : Fragment() {
         val pxWidth = displayMetrics.widthPixels
         val pxHeight = displayMetrics.heightPixels - footerLayout
         val pixelGrid = getPixelGrid(pxWidth, pxHeight, cellArray)
-        setUpPixelGrid(pixelGrid)
+        binding.viewLayout.addView(pixelGrid)
+
+        setTime()
     }
 
     private fun getPixelGrid(
@@ -103,35 +106,8 @@ class PixelGridFragment : Fragment() {
         }
     }
 
-    private fun getLayoutParamsForPixelGridView(view: PixelGridView): ConstraintLayout.LayoutParams {
-        return ConstraintLayout.LayoutParams(view.getViewWidth() + 10, view.getViewHeight() + 10)
-            .apply {
-                //TODO
-                horizontalBias = 0.5f
-                verticalBias = 0.5f
-            }
-    }
-
-    private fun setUpPixelGrid(pixelGrid: PixelGridView) {
-        binding.root.apply {
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(this)
-            constraintSet.connect(this.id, ConstraintSet.START, pixelGrid.id, ConstraintSet.START)
-            constraintSet.connect(this.id, ConstraintSet.TOP, pixelGrid.id, ConstraintSet.TOP)
-            constraintSet.connect(this.id, ConstraintSet.END, pixelGrid.id, ConstraintSet.END)
-            constraintSet.connect(
-                binding.footerLayout.id,
-                ConstraintSet.TOP,
-                pixelGrid.id,
-                ConstraintSet.BOTTOM
-            )
-            //TODO
-            constraintSet.setHorizontalBias(this.id, 0.5f)
-            constraintSet.setVerticalBias(this.id, 0.5f)
-            setConstraintSet(constraintSet)
-            addView(pixelGrid)
-        }
-        setTime()
+    private fun getLayoutParamsForPixelGridView(view: PixelGridView): FrameLayout.LayoutParams {
+        return FrameLayout.LayoutParams(view.getViewWidth() + 10, view.getViewHeight() + 10)
     }
 
     private fun navigateToPainedPixelGridFragment() {
